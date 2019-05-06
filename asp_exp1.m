@@ -4,10 +4,9 @@
 % EEEM007 Advanced Signal Processing - Lab Experiments
 % Filename: asp_exp1.m
 % Date started: 11-Mar-2019
-% Date updated: 11-Mar-2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% 0. Clear everything
+%% Clear everything and setup
 clear all
 close all
 clc
@@ -23,7 +22,7 @@ mu2 = [a+d; b+d]
 cova = [c f;f c] % cova is the covariance matrix. didn't use cov since it's a built in function
 
 
-%% 1. Effect of training sample size on classifier performance
+%% Effect of training sample size on classifier performance
 X1_test = mvnrnd(mu1,cova,100);
 X2_test = mvnrnd(mu2,cova,100);
 plot2Classes(X1_test, X2_test, 1, "test")
@@ -63,4 +62,4 @@ legend('Test Set Error', 'Training Set Error')
 title(sprintf("ASP - Experiment 1"))
 xlabel('Nd')
 ylabel('Average Error')
-saveas(fig,'./Exp1-results/ErrorComparison.png')
+% saveas(fig,'./Exp1-results/ErrorComparison.png')

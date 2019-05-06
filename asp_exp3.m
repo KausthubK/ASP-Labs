@@ -2,8 +2,8 @@
 % @author: Kausthub Krishnamurthy
 % URN:     6562233
 % EEEM007 Advanced Signal Processing - Lab Experiments
-% Filename: asp_exp2.m
-% Date started: 18-Apr-2019
+% Filename: asp_exp3.m
+% Date started: 03-May-2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Clear everything and setup
@@ -18,7 +18,7 @@ c = 3;
 d = 3; 
 f = 1;
 
-%% Effect of test set size on classifier performance
+%% effect of the size of test set on the reliability of the empirical error count estimator
 
 sampleSizes = [3 5 10 20 50 100 200 500]
 dimensionSizes = [5, 10, 15]
