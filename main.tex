@@ -1,0 +1,99 @@
+\documentclass[11pt]{article}
+\usepackage[top=2cm, bottom=3cm, left=2cm, right=2cm]{geometry}
+%\renewcommand{\thesubsubsection}{\thesubsection.\roman{subsubsection}}
+\usepackage{subfiles}
+\usepackage{gensymb}
+\usepackage{amsmath}
+\usepackage{units}
+\usepackage{amssymb}
+\usepackage[numbers]{natbib} % use this if not all your bibitems have an author and a year
+%\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage[toc,page]{appendix}
+\usepackage[printonlyused]{acronym}
+\usepackage{multicol}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareRobustCommand\nocite[1]{%
+    {\def\cite##1{\ignorespaces}#1}}
+\newcommand\nocitecaption[1]{\caption[\nocite{#1}]{#1}}
+
+%\nocitecaption{\caption this is my caption[\nocite{}]{}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\code}{\texttt}
+
+% you need this to input images in the way used in the results (copy paste that layout wherever you want and just change the image file name, the caption and the label
+\usepackage{graphicx}
+\usepackage[numbered, framed]{mcode}
+\usepackage{float}
+\usepackage{lscape}
+
+% following lines make sure that tables and figures are labelled as Figure Ch.Num
+\usepackage{chngcntr}
+\counterwithin{table}{section}
+\counterwithin{figure}{section}
+
+%setting up page headers/footers
+\usepackage{fancyhdr}
+\setlength{\headheight}{25pt} 
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+
+%for fitting tables to a page
+\usepackage{tabularx}
+
+%for aligning images side by side
+\usepackage{subcaption}
+\usepackage{graphicx}
+
+%\lhead{Technical Report}
+\rhead{Matlab NN - 6562233}
+\lfoot{EEEM005: AI \& AI Prgramming}
+
+%format for code listings
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily,
+	columns=fullflexible,
+	frame=single,
+	breaklines=true,
+	postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+% THIS IS A COMMENT WE CAN WRITE WHATEVER WE WANT HERE WITHOUT IT SHOWING UP ON THE FINAL DOCUMENT
+
+%Note for Kausthub: be careful on the difference between \input and \include. Can nest inputs. Can't nest includes. can't include within an input. can input under and include or another input. include forces pagebreak
+
+%FOR TABLES:: Write in Excel then use this website
+%http://www.tablesgenerator.com/
+
+% Removes indents from new paragraphs
+\setlength{\parindent}{0pt}
+
+\begin{document}
+	\pagenumbering{gobble}		%holds page numbering so that it doesn't start yet
+	
+    \input{./AssignmentCoversheet.tex}
+	\input{./ToC.tex}
+    \acresetall
+    %starts numbering pages from here and adds it to the right footer
+	\pagebreak
+	\rfoot{\thepage}
+	\rhead{\nouppercase{\rightmark}}
+	\pagenumbering{arabic}
+    
+    % Contents goes here
+    \input{./1_Introduction}
+    \input{./2_Experiment1}
+    \input{./3_Experiment2}
+    \input{./4_Experiment3}
+    \input{./5_Experiment4}
+    \input{./6_Experiment5}
+    \input{./7_Experiment6}
+    \input{./conclusions}
+    \input{./Bibliography.tex}
+    \input{./Appendix.tex}
+\end{document}
+

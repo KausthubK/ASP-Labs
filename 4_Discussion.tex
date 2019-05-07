@@ -1,0 +1,398 @@
+\pagebreak
+\section{Results \& Discussion}\label{disc}
+
+\subsection{Comparison of RGB Histogram Quantization Levels}\label{rgbquantdisc}
+%	This is particularly with reference to global \ac{RGB} histogram calculation and varying quantization levels to find an optimum point, using single value numeric metrics (\ac{MAP} and F1 Score) in order to evaluate this. In Table \ref{qlc} below we can see that depending on which score you use either 9 is the optimal number of bins (based on the F1 Score), or 10 (based on the \ac{MAP}). In this case there is little difference between the two, showing also that the two metrics approximate to very similar final results. In this situation a design decision should be made to go with a quantization number of 10 as this means there will be 10 bins in the histogram (something that can be programmatically optimized by bit-shifting), which is why 10 was preferred and the \ac{MAP} is considered of higher relevance for the purposes of this report. For the sake of maintaining scope this bit-shifting method was not implemented but stands to improve processing time.\\
+%	
+%	\begin{table}[h]
+%		\centering
+%		\begin{tabular}{c|c|c}
+%			\textbf{Quantization} & \textbf{MAP} & \textbf{F1 Score} \\ \hline
+%			4                     & 0.1396       & 0.1162            \\
+%			6                     & 0.1488       & 0.1234            \\
+%			8                     & 0.1495       & 0.1345            \\
+%			\textcolor{blue}{9}                     & 0.1514       & \textcolor{blue}{0.1300}            \\
+%			\textcolor{blue}{10}                    & \textcolor{blue}{0.1521}       & 0.1277            \\
+%			12                    & 0.1463       & 0.1254            \\
+%			15                    & 0.1494       & 0.1211            \\
+%			20                    & 0.1373       & 0.1078           
+%		\end{tabular}
+%		\caption{Quantization Level Comparison (Top 15 Results)}
+%		\label{qlc}
+%	\end{table}
+%\vspace{-1cm}
+%\subsection{PR Curves \& Confusion Matrices}
+%For each of the following strategies the PR Curve and relevant Confusion Matrix is displayed. Most were using Euclidean Distances (unless PCA was used - with Modified Euclidean).\vspace{-0.25cm}
+%	\subsubsection{Average Colour}
+%		Plotted here is the Average Colour descriptor results and we can see that this is an inadequate system, and so has a lot of noise in false positives and false negatives in Figure \ref{avCol}.
+%			\begin{figure}[h]
+%			\centering
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/results/colourAvg-euclidean-q4-pr-map-f1-EACH.png}
+%				\caption{Average Colour PR Curve}
+%			\end{subfigure}%
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/results/colourAvg-euclidean-q4-confmat.png}
+%				\caption{Average Colour Confusion Matrix}
+%			\end{subfigure}
+%			\caption{Results for Average Colour Descriptor}
+%			\label{avCol}
+%		\end{figure}
+%
+%	By checking the confusion matrix we can see that the best results for this come with query images in classes 9, 13, and 20:\\
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{\textwidth}
+%			\centering
+%			\includegraphics[width=\linewidth]{./img/results/vs_img9_1_19-Nov-2018_01-18-52-824_colourAvg_q4_euclidean_results.png}
+%			\caption{Average Colour Class 9}
+%		\end{subfigure}
+%		\begin{subfigure}{\textwidth}
+%			\centering
+%			\includegraphics[width=\linewidth]{./img/results/vs_img13_1_19-Nov-2018_01-18-59-970_colourAvg_q4_euclidean_results.png}
+%			\caption{Average Colour Class 13}
+%		\end{subfigure}
+%		\begin{subfigure}{\textwidth}
+%			\centering
+%			\includegraphics[width=\linewidth]{./img/results/vs_img20_1_19-Nov-2018_01-19-13-013_colourAvg_q4_euclidean_results.png}
+%			\caption{Average Colour Class 20}
+%		\end{subfigure}
+%		\caption{Output for Average Colour Descriptor}
+%		\label{avColRes}
+%	\end{figure}
+%
+%	\vspace{-1cm}
+%	\subsubsection{Global RGB Histogram}
+%	Plotted here is the Global RGB Histogram descriptor results and we can see that this is an inadequate system, and so has a lot of noise in false positives and false negatives in Figure \ref{grgbh}.
+%	
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/results/globalRGBhist-euclidean-q4-pr-map-f1-EACH.png}
+%			\caption{Global RGB Histogram PR Curve}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/results/globalRGBhist-euclidean-q4-confmat.png}
+%			\caption{Global RGB Histogram Confusion Matrix}
+%		\end{subfigure}
+%		\caption{Results for Global RGB Histogram Descriptor}
+%		\label{grgbh}
+%	\end{figure}
+%
+%	For the same classes (9, 13) we notice that Class 9 has performed significantly worse compared to the Average Colour Descriptor, Class 13 has performed better. This can be visually verified by comparing the output of the two (Figure \ref{avColRes} vs Figure \ref{grgbhRes}):\\
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{\textwidth}
+%			\centering
+%			\includegraphics[width=\linewidth]{./img/results/vs_img9_1_19-Nov-2018_01-20-12-289_globalRGBhist_q4_euclidean_results.png}
+%			\caption{Global RGB Histogram Class 9}
+%		\end{subfigure}
+%		\begin{subfigure}{\textwidth}
+%			\centering
+%			\includegraphics[width=\linewidth]{./img/results/vs_img13_1_19-Nov-2018_01-20-19-089_globalRGBhist_q4_euclidean_results.png}
+%			\caption{Global RGB Histogram Class 13}
+%		\end{subfigure}
+%		\caption{Output for Global RGB Histogram Descriptor}
+%		\label{grgbhRes}
+%	\end{figure}
+%	
+%	For the sake of avoiding duplication of data, the other quantization values' PR curves and confusion matrices have not been plotted but were tested for a number of quantization levels as discussed in Section \ref{rgbquantdisc}. This resulted in a quantization value of 10 being selected as more effective for the RGB Histogram.
+%
+%	\pagebreak
+%	\subsubsection{Edge Orientation Histogram}
+%		Plotted here is the Global Edge Orientation Histogram descriptor results .
+%		
+%		\begin{figure}[h]
+%			\centering
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/results/eoh-euclidean-q10-pr-map-f1-EACH.png}
+%				\caption{EOH PR Curve}
+%			\end{subfigure}%
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/results/eoh-euclidean-q10-confmat.png}
+%				\caption{EOH Confusion Matrix}
+%			\end{subfigure}
+%			\caption{Results for EOH Descriptor angular quantization = 8}
+%		\end{figure}
+%		We see lower MAP scores and reduced brightness on the diagonal of the Confusion Matrix, and so can move on without considering this further. This kind of detector will be revisited while using a Spatial Grid strategy.
+%
+%	\subsubsection{Edge Orientation \& Colour Histogram}
+%		Plotted here is the Global Edge Orientation Colour Histogram descriptor results .
+%		\begin{figure}[h]
+%			\centering
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/results/eocHist-euclidean-q4-pr-map-f1-EACH.png}
+%				\caption{EOCH PR Curve}
+%			\end{subfigure}%
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/results/eocHist-euclidean-q4-confmat.png}
+%				\caption{EOCH Confusion Matrix}
+%			\end{subfigure}
+%			\caption{Results for EOCH Descriptor angular quantization = 8}
+%		\end{figure}
+%	Interestingly we notice that the results between the \ac{EOH} and the \ac{EOCH} are identical. This may be that while the distances are different it is by such a marginal manner that the order of results remains the same. It can be inferred then, that the dominant component of the \ac{EOCH} histograms come from the Edge Orientations.
+%	
+%	\pagebreak
+%	\subsubsection{Spatial Grid}
+%	Implementing a spatial grid gives positional information and resulted in the following results:
+%	
+%	\textbf{For the \ac{EOH} decriptor:}
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/results/spatEOH-euclidean-q4-ang8-pr-map-f1-EACH.png}
+%			\caption{EOH PR Curve}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/results/spatEOH-euclidean-q4-ang8-confmat.png}
+%			\caption{EOH Confusion Matrix}
+%		\end{subfigure}
+%		\caption{Results for Spatial EOH Descriptor angular quantization = 8}
+%	\end{figure}
+%
+%	\textbf{For the \ac{EOCH} decriptor:}
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/results/spatEOCH-euclidean-q4-ang8-pr-map-f1-EACH.png}
+%			\caption{EOCH PR Curve}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/results/spatEOCH-euclidean-q4-ang8-confmat.png}
+%			\caption{EOCH Confusion Matrix}
+%		\end{subfigure}
+%		\caption{Results for Spatial EOCH Descriptor angular quantization = 8}
+%	\end{figure}
+%	
+%	With each of these cases we notice that there seems to be a decrease in effectiveness, as the 8th and 10th classes seem to be overfit-to. These represent as more vertical stripes on the Confusion Matrices. Due to this overfit the performance of Class 8 and 10 naturally improve at the detriment of the overall performance.\\
+%
+%	\pagebreak
+%	\textbf{Angular Quantization Comparison} was conducted on the EOH descriptor so as to minimize the number of variables at play so as to isolate the effect of angular quantization.
+%	
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/ang/spatEOH-euclidean-q4-ang4-pr-map-f1-EACH.png}
+%			\caption{AQ = 4 PR Curve}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/ang/spatEOH-euclidean-q4-ang4-confmat.png}
+%			\caption{AQ = 4  Confusion Matrix}
+%		\end{subfigure}
+%		\caption{Angular Quantization = 4 for Spatial Grid EOH}
+%		\label{q4}
+%	\end{figure}
+%
+%	\begin{figure}[h]
+%		\centering
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/ang/spatEOH-euclidean-q4-ang6-pr-map-f1-EACH.png}
+%			\caption{AQ = 6 PR Curve}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/ang/spatEOH-euclidean-q4-ang6-confmat.png}
+%			\caption{AQ = 6  Confusion Matrix}
+%		\end{subfigure}
+%		\caption{Angular Quantization = 6 for Spatial Grid EOH}
+%		\label{q6}
+%	\end{figure}
+%
+%	We can see from these three sets of PR Curves and Confusion Matrices (Figures \ref{q4} \ref{q6}, S\ref{q8}) that the effect is minimal on the overall MAP (with an angular quantization of 8 having the best MAP at 0.1058). However this seems to only work on some classes (as seen in the blue dashed line in Figure \ref{q8} having a marginally improved precision, but the same effect is not seen on the yellow dashed line representing a different class.\\
+%
+%	\pagebreak
+%	\begin{figure}[h]
+%		\centering	
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/ang/spatEOH-euclidean-q4-ang8-pr-map-f1-EACH.png}
+%			\caption{AQ = 8 PR Curve}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/ang/spatEOH-euclidean-q4-ang8-confmat.png}
+%			\caption{AQ = 8  Confusion Matrix}
+%		\end{subfigure}		
+%		\caption{Angular Quantization = 8 for Spatial Grid EOH}
+%		\label{q8}
+%	\end{figure}
+%	
+%	The greatest effect that could be seen of the use of Spatial Grids came from implementing it on the Average Colour Descriptor, whilst using the Chebyshev distance instead - as this report later goes on to find that this is one of the more effective measurement methods (see Section \ref{distMeasResults}).
+%	
+%	\begin{figure}[h]
+%		\centering	
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/results/spatColAvg-chebyshev-q4-pr-map-f1-EACH.png}
+%			\caption{Spatial Average Colour PR Curve}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/results/spatColAvg-chebyshev-q4-confmat.png}
+%			\caption{Spatial Average Colour Confusion Matrix}
+%		\end{subfigure}		
+%		\caption{Spatial Average Colour}
+%		\label{spac}
+%	\end{figure}
+%	
+%We immediately see a significant improvement in the performance of a number of classes (20, 4, 1, 19, and 9) with a MAP of 0.2004, and an F1 Score of 0.1669.
+%
+%\pagebreak
+%\subsection{Comparison of Distance Measures}\label{distMeasResults}
+%	Each Distance Measure is compared with a quantization of 4, as conducted on the Spatial Colour Average Algorithm.\\
+%	
+%	\begin{table}[h]
+%		\centering
+%		\begin{tabular}{c|c}
+%			\textbf{Distance Type}                                                   & \textbf{MAP} \\ \hline
+%			Euclidean                                                                & 0.2028       \\
+%			Manhattan                                                                & 0.1962       \\
+%			Chebyshev                                                                & 0.2004       \\
+%			\begin{tabular}[c]{@{}c@{}}PCA (80\%)\\ Mahalanobis\end{tabular}         & 0.1182       \\
+%			\begin{tabular}[c]{@{}c@{}}PCA (80\%) \\ Modified Euclidean\end{tabular} & 0.1182      
+%		\end{tabular}
+%	\caption{Comparing Distance Measures}
+%	\end{table}
+%
+%	As we can see the Chebyshev and Euclidean Measures are the two frontrunners and are somewhat similar. So the next consideration is to go to a class by class analysis and look at the spread of how effective each is on individual classes. We can see that while the Chebyshev Distance is approximately equal on average case and worst case, it is significantly better in best case scenarios (for classes 20, 4, 1, 19, and 9), as seen in Figure \ref{dist}, where the spread of dashed curves is larger, and brighter diagonal classes exist.\\
+%	
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/dist/spatColAvg-euclidean-q4-pr-map-f1-EACH.png}
+%			\caption{Euclidean Distance PR Curve}
+%			\label{eucpr}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/dist/spatColAvg-euclidean-q4-confmat.png}
+%			\caption{Euclidean Distance Confusion Matrix}
+%			\label{euccm}
+%		\end{subfigure}
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.7\linewidth]{./img/dist/spatColAvg-chebyshev-q4-pr-map-f1-EACH.png}
+%			\caption{Chebyshev Distance PR Curve}
+%			\label{chebpr}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.7\linewidth]{./img/dist/spatColAvg-chebyshev-q4-confmat.png}
+%			\caption{Chebyshev Distance Confusion Matrix}
+%			\label{chebcm}
+%		\end{subfigure}
+%		\caption{Distance Measure Comparisons}
+%		\label{dist}
+%	\end{figure}
+%
+%\pagebreak
+%\subsection{PCA Results}
+%Based on the discussions above, the best samples of experimentation to look at for Principal Component Analysis would be the Spatial Grid Average Colour Descriptor (with a quantization level of 4) and comparing the figures below (Fig.\ref{pca80}, Fig.\ref{pca97}) with Figure \ref{spac}. The strategy behind the top 80\% and top 97\% is outlined in Section \ref{pca-dr}.
+%	
+%\begin{figure}[h]
+%	\centering	
+%	\begin{subfigure}{.5\textwidth}
+%		\centering
+%		\includegraphics[width=.8\linewidth]{./img/pca/spatColAvg-modifiedEuclidean-q4-pr-map-f1-EACH-PCA-80.png}
+%		\caption{Spatial Average Colour PR Curve}
+%	\end{subfigure}%
+%	\begin{subfigure}{.5\textwidth}
+%		\centering
+%		\includegraphics[width=.8\linewidth]{./img/pca/spatColAvg-modifiedEuclidean-q4-confmat-PCA-80.png}
+%		\caption{Spatial Average Colour Confusion Matrix}
+%	\end{subfigure}		
+%	\caption{Spatial Average Colour with PCA (Top 80\%)}
+%	\label{pca80}
+%\end{figure}
+%
+%\begin{figure}[h]
+%	\centering	
+%	\begin{subfigure}{.5\textwidth}
+%		\centering
+%		\includegraphics[width=.8\linewidth]{./img/pca/spatColAvg-modifiedEuclidean-q4-pr-map-f1-EACH-PCA-97.png}
+%		\caption{Spatial Average Colour PR Curve}
+%	\end{subfigure}%
+%	\begin{subfigure}{.5\textwidth}
+%		\centering
+%		\includegraphics[width=.8\linewidth]{./img/pca/spatColAvg-modifiedEuclidean-q4-confmat-PCA-97.png}
+%		\caption{Spatial Average Colour Confusion Matrix}
+%	\end{subfigure}		
+%	\caption{Spatial Average Colour with PCA (Top 97\%)}
+%	\label{pca97}
+%\end{figure}
+%
+%It seems that taking the top 80\% (by value) of the principal components performs better with a MAP of 0.1182 (as opposed to 0.1104 for 97\%). However this is still significantly lower to the MAP of 0.2004 presented in Fig.\ref{spac}, which doesn't use the Modified Euclidean Distance, but the Chebyshev distance instead. However the Euclidean Distance without \ac{PCA} also performs better than either of these situations.
+%
+%\pagebreak
+%\subsection{Best Results}
+%The best results attained over the course of the experimentation outlined in this report were based on the following configurations for the Visual Search Algorithm. With these settings being chosen during the setup stage in the main script (visSearch\_6562233.m see Listing \ref{code_main}). This effectively means that we are using a Spatial Grid implementation of the Colour Average descriptor. Quantization and Top N Percentile do not matter with this implementation as this does not employ a histogram nor does it perform \ac{PCA}\\.
+%
+%\begin{verbatim}
+%	global_DESCRIPTOR='spatColAvg'; 
+%	global_quant = 4;
+%	global_distType = 'chebyshev';
+%	global_pcaFlag = 0;
+%	global_topNPercentile = 80;
+%\end{verbatim}
+% While the remainder of the report has focused on evaluating all 20 classes, it is important to note that in a real engineering situation often it's a question of what the capacity of a system is on a particular dataset. For that reason the best result can be looked at in an isolated manner. This does not change the implementation as the resulting images are the same as in Figure \ref{spac}. However, when we look at the 5 classes that it seemed to perform more optimally on (20, 4, 1, 19, and 9) we can see that the mean performance for these queries are far better than the average, and far better than any individual class in other methods. The MAP for this and the F1 score are shown in the Figure below.\\
+% 
+%Resulting in:
+%\begin{figure}[h]
+%	\centering	
+%	\includegraphics[width=\linewidth]{./img/spatColAvg-chebyshev-q4-pr-map-f1-TOP5Classes-big.png}
+%	\caption{Best Results PR Curve}
+%	\label{best}
+%\end{figure}
+%
+%\pagebreak
+%The resulting output for these classes are as follows:
+%
+%	\begin{figure}[h]
+%	\centering
+%	\begin{subfigure}{\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{./img/vs_img20_1_19-Nov-2018_07-32-12-908_spatColAvg_q4_chebyshev_results.png}
+%		\caption{Class 20}
+%	\end{subfigure}
+%	\begin{subfigure}{\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{./img/vs_img4_1_19-Nov-2018_07-31-46-383_spatColAvg_q4_chebyshev_results.png}
+%		\caption{Class 4}
+%	\end{subfigure}
+%	\begin{subfigure}{\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{./img/vs_img1_1_19-Nov-2018_07-31-41-342_spatColAvg_q4_chebyshev_results.png}
+%		\caption{Class 1}
+%	\end{subfigure}
+%	\begin{subfigure}{\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{./img/vs_img19_1_19-Nov-2018_07-32-11-248_spatColAvg_q4_chebyshev_results.png}
+%		\caption{Class 19}
+%	\end{subfigure}
+%	\begin{subfigure}{\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{./img/vs_img9_1_19-Nov-2018_07-31-54-599_spatColAvg_q4_chebyshev_results.png}
+%		\caption{Class 9}
+%	\end{subfigure}
+%	\caption{Output for Spatial Grid Average Colour Descriptor}
+%	\label{bestOut}
+%\end{figure}
+%

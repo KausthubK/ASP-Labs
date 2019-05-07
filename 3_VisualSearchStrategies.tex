@@ -1,0 +1,247 @@
+\pagebreak
+\section{Visual Search Strategies}\label{strategies}
+%	Initially the skeleton code provided would return the images in a random order. The aim of this project was to design different descriptors and different distance measures that will return relevant results. This section outlines each of the strategies attempted.
+%	
+%\subsection{Descriptors}
+%	Different descriptors can be used in order to represent an image in a multidimensional space. The different descriptors methods include:
+%
+%	\begin{table}[h]
+%		\centering
+%		\begin{tabular}{r|l}
+%			\multicolumn{1}{c|}{\textbf{Requirement \#}} & \textbf{Descriptor}                        \\ \hline
+%			5                                         & colourAvg                                  \\
+%			1                                         & globalRGBhist                              \\
+%			3                                         & eoh                                        \\
+%			3                                         & eocHist                                    \\
+%			3                                         & Spatial Grid 
+%		\end{tabular}
+%	\end{table}
+%	
+%	\subsubsection{Global Colour Average}
+%		Effectively this takes the average colour in each channel (\ac{RGB}) of each image and this results in a 3-dimensional feature (F) for every image. See Listing \ref{code_colourAverage}.
+%	
+%		\begin{verbatim}
+%			F = [meanRed, meanGreen, meanBlue]
+%		\end{verbatim}
+%		
+%		Each image can then be plotted as a point in a 3-Dimensional space and the distances calculated between each image in this space. This measure was done as an additional measure as it was simple to implement and was a good first stepping stone to understanding the skeleton code and building an easy to modify script.
+%		
+%	\subsubsection{Global \ac{RGB} Histogram}
+%		This method takes each of the \ac{RGB} channels, and quantises these into bins according to an input quantization level. Step 1 in this process is to requantize the original image (in each channel individually) which significantly increases the contrast. Step 2 is to take the weighted sum of each value. Step 3 is to correct this to a vector and compute a histogram that describes the image.\\
+%		
+%		Multiple quantization levels were compared (4, 6, 8, 9, 10, 12, 15, 20) and a quantization level of 10 was found to be most effective for most situations. However the repercussion is that the computational time increases significantly with increased quantization levels. Further analysis of quantization levels will be discussed in Section \ref{disc}. See Listing \ref{code_globalRGBhist}.
+%		
+%		\begin{figure}[h]
+%			\centering
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/rgbhist/OriginalImage.png}
+%				\caption{Original Image}
+%				\label{originalimg}
+%			\end{subfigure}%
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/rgbhist/RGBChannelQuantized.png}
+%				\caption{Step 1: RGB Channel Quantized}
+%				\label{rgbquantized}
+%			\end{subfigure}
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/rgbhist/weightedSumIntensityMap.png}
+%				\caption{Step 2: Weighted Sum of Values}
+%				\label{intensitymap}
+%			\end{subfigure}%
+%			\begin{subfigure}{.5\textwidth}
+%				\centering
+%				\includegraphics[width=.8\linewidth]{./img/rgbhist/histogram.png}
+%				\caption{Step 3: Global RGB Histogram}
+%				\label{rgbhist}
+%			\end{subfigure}
+%			\caption{Global RGB Histogram Conversion}
+%			\label{grgbhist}
+%		\end{figure}
+%
+%	\pagebreak
+%	\textbf{Histogram Computation} was done with a custom function that takes a vector of numeric values, and a number of bins (n) as its input, and distributes the values into n different bins (equally spaced across the range of the input vector). See Listing \ref{code_myHist}.
+%	
+%	\subsubsection{\ac{EOH}}
+%	The first step in this is to convert the image to grayscale using a custom function (see Listing \ref{code_grayscalize}) that is equivalent to MATLAB's inbuilt rgb2gray() function. Mathematically\cite{Lectures2018}(Lecture 1):
+%	\vspace{-0.25cm}
+%	\begin{align}
+%		Grayscale Image = (0.30\times{R}) + (0.59\times{G}) + (0.11\times{B})
+%	\end{align}
+%	
+%	The second step in this process extracts edges in an image with a Sobel Filter kernel\cite{Lectures2018}(Lecture 2) to find the vertical and horizontal components ($\delta{x}, \delta{y}$) of every edge in the grayscale image.
+%	
+%	\begin{multicols}{2}
+%		\begin{verbatim}
+%		sobelKernelY =
+%		
+%		0.2500    0.5000    0.2500
+%		0         0         0
+%		-0.2500   -0.5000   -0.2500
+%		\end{verbatim}
+%		\begin{verbatim}
+%		sobelKernelX =
+%		
+%		0.2500         0   -0.2500
+%		0.5000         0   -0.5000
+%		0.2500         0   -0.2500
+%		\end{verbatim}
+%	\end{multicols}
+%
+%	The magnitude of edges is calculated by using the square root of the sum of squares of $\delta{x}, \delta{y}$. The orientation for each pixel is acquired by finding the arctangent of $\delta{y}/\delta{y}$. Filtering out any edges below a magnitude of 0.15 allows the removal of low magnitude edges that add noise to the image. This is done by masking the orientation image with a boolean mask created where the magnitude is greater than 0.15.\\
+%	
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.7\linewidth]{./img/eoh/OriginalImage.png}
+%			\caption{Original Image}
+%			\label{eoriginalimage}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.7\linewidth]{./img/eoh/EdgeMagnitude.png}
+%			\caption{Edge Magnitude Image}
+%			\label{emi}
+%		\end{subfigure}
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.7\linewidth]{./img/eoh/EdgeOrientation.png}
+%			\caption{Edge Oriented Image}
+%			\label{eoi}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.7\linewidth]{./img/eoh/ThresholdedEdgeOrientation.png}
+%			\caption{Thresholded Edge Orientation Image}
+%			\label{eoth}
+%		\end{subfigure}
+%		\caption{Edge Orientation Extraction}
+%		\label{eohProcessing}
+%	\end{figure}
+%	
+%	The final step is to take this orientation image and create a histogram with it using the same custom histogram function that was created earlier. Various angular quantization values are tested, the results discussed in Section \ref{disc}.
+%		
+%	\begin{figure}[h]
+%		\centering
+%		\includegraphics[width=.4\linewidth]{./img/eoh/histogram.png}
+%		\caption{Edge Orientation Histogram (angular quant = 8)}
+%		\label{eoh}
+%	\end{figure}
+%	
+%	\pagebreak
+%	\subsubsection{\ac{EOCH}}
+%	One of the suggested methods of computing a descriptor is to make an \ac{EOH}, and an \ac{RGB} colour histogram, and concatenate the two histograms to form one longer vector per image.
+%	
+%	The benefit of a process like this is that it can take into account the edge information separately to the colour information and therefore has a greater understanding of the content of each image. However the drawbacks of using this method means that the histogram is longer than either of the two previous methods, making this slower to process.
+%	
+%	\subsubsection{Spatial Grid Implementation}
+%	Each of these descriptors can be used via a spatial grid that breaks the image into smaller equal images and computes the histograms (using one of the previous techniques) for each smaller image, before concatenating the results. This effectively means that the spatial relationships within the image are preserved. This makes it robust to images with similar statistical characteristics but different actual information.\\
+%	
+%	Initially a smaller window of $5\times{5}$ pixels was used but this resulted in a histogram of length in the order of over 150,000 values, which made the computational time unreasonably long. In the end a square window of size $37\times(37)$ was used as this results in approximately 50 grid boxes per image.\\
+%	
+%	One other contributing factor was that the orientations and pixel sizes of each image was different (and sometimes containing dimension lengths of 213) which meant that resizing the image would be necessary. While the image could have been resized this would have lost information and relied on some level of interpolation (which would integrate any noise in the image). Cropping the image would remove data, potentially negatively impacting the image. Instead padding this image with extra pixels (so that it is correctly divisible by the square window) seemed the best option. The first such padding method was to occupy each of these pixels with the mean \ac{RGB} value of the entire image. This was a promising method since it would be robust to statistical changes (critical for the colour histogram methods). However this means that a colour strip on the edge of the image would be present, thus introducing an extra bias in the edge detection that could be detrimental.\\
+%	
+%	The other idea was to simply copy the last column and concatenate it to the image. This means that there would be a minimal edge difference along that area but would change the statistical representation of the image. However, while this did not seem to affect Mean precision scores or F1 scores, it shows Class 10 images being misidentified as Class 14 images in Figure \ref{prevRC_14}, and (when using an Edge Orientation Histogram) results in all classes over-fitting to class 8 (see Figure \ref{prevRC_eoh}).\\
+%	
+%\begin{figure}[h]
+%	\centering
+%	\begin{subfigure}{.5\textwidth}
+%		\centering
+%		\includegraphics[width=.8\linewidth]{./img/spatRGBhist-chebyshev-q4-confmat.png}
+%		\caption{Class 10 images being misidentified as Class 14 images}
+%		\label{prevRC_14}
+%	\end{subfigure}%
+%	\begin{subfigure}{.5\textwidth}
+%		\centering
+%		\includegraphics[width=.8\linewidth]{./img/spatEOH-chebyshev-q4-confmat.png}
+%		\caption{Previous Row/Column Padding}
+%		\label{prevRC_eoh}
+%	\end{subfigure}
+%	\caption{Previous Row/Column Padding}
+%	\label{prevRC}
+%\end{figure}
+%
+%	\pagebreak
+%	\subsubsection{\ac{PCA} for Dimensionality Reduction}\label{pca-dr}
+%	Principal Component Analysis can be done with any of these Feature Descriptors. Step 1 is creating an EigenModel of each of the Features that have been computed. Using the EigenValues, any EigenVector that is in the Null Space (EigenValue $\approxeq$ 0) can be disregarded as dimensions in which the Descriptors vary too little across the range of images. If these can be disregarded then the computational time improves significantly.\\
+%	
+%	In this case experimentation was done within 80\% of the highest Eigenvalue, and within the top 97\% of the highest Eigenvalue, each resulting in significant reduction of Principal Component dimensions. This is then combined with the calculation of the Mahalanobis Distance (or Modified Euclidean Distance) in order to scale this appropriately to the EigenModel of the query image. The \ac{MAP} score and the F1 score were both higher in the top 80\% process than in the top 97\% version, and so 80\% was used for the remainder of this report.\\
+%		
+%	\begin{figure}[h]
+%		\centering
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/spatColAvg-mahalanobis-q4-pr-map-f1-EACH-PCA-80.png}
+%			\caption{Top 80\% PCA}
+%		\end{subfigure}%
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=.8\linewidth]{./img/spatColAvg-mahalanobis-q4-pr-map-f1-EACH-PCA-97.png}
+%			\caption{Top 97\% PCA}
+%		\end{subfigure}
+%		\caption{Principal Component Analysis - Threshold test results (80\% vs 97\%)}
+%		\label{pca_thresh}
+%	\end{figure}
+%
+%\subsection{Distance Measures}
+%Different distance measures\cite{hertz2006}\cite{digesu1999} can be used in order to compare every image in the data-set to the query image. The different distance measures include:
+%	\begin{table}[h]
+%		\centering
+%		\begin{tabular}{r|l}
+%			\multicolumn{1}{c|}{\textbf{Requirement \#}} & \textbf{Distance Measure} \\ \hline
+%			1                                         & Euclidean                 \\
+%			4                                         & Mahalanobis               \\
+%			4                                         & Modified Euclidean        \\
+%			5                                         & Manhattan                 \\
+%			5                                         & Chebyshev                
+%		\end{tabular}
+%	\end{table}
+%	
+%	\subsubsection{Euclidean Distance}
+%	One of the most basic distance measures (also known as the L2-Norm) derived as a generalization of the distance between any two points in an N-dimensional frame. Mathematically:
+%	
+%	\begin{align}
+%		distance = \sqrt{(P1_{dim1} - P2_{dim1})^2 + (P1_{dim2} - P2_{dim2})^2 + ... + (P1_{dimN} - P2_{dimN})^2}
+%	\end{align}
+%	
+%	 Implemented as follows:
+%	\begin{verbatim}
+%		x = F1 - F2;
+%		x = x.^2;
+%		x = sum(x);
+%		dst = sqrt(x); 
+%	\end{verbatim}
+%	
+%	\subsubsection{Modified Euclidean Distance}
+%	This is a modification of the Euclidean Distance measure, weighted to scale down according to the eigenvalues of the query image. This was also compared to the Eigen\_Mahalanobis.m function provided as a part of the \ac{PCA} code library and the resulting classifications were seen to be the same. This method was used because it is effectively the same although as data-sets scale the Eigen\_Mahalanobis.m function would be faster as it is implemented as a matrix operation and not implemented as an iterative function.
+%	\begin{verbatim}
+%		x = (F1 - F2);
+%		x = x.^2;
+%		x = x./(E.val);
+%		x = sum(x);
+%		dst = sqrt(x); 
+%	\end{verbatim}
+%	
+%	\subsubsection{Manhattan Distance}
+%	Manhattan Distance or L1-Norm can be derived from the generalization of the Euclidean Distance formula and is essentially a simplification that considers the sum of the cardinal distances between 2 points in an N-Dimensional space. Programmatically this can be implemented as follows:
+%	\begin{verbatim}
+%		x = F1 - F2;
+%		x = abs(x);
+%		dst = sum(x);	
+%	\end{verbatim}
+%	
+%	\subsubsection{Chebyshev Distance}
+%	As an extension to try alternate measurement methods the Chebyshev (or Chessboard) Distance was investigated. Interestingly this was significantly more effective for certain classes and had little to no effect on others. Mathematically:
+%	
+%	\begin{align}
+%		distance = MAX(|P1_{dim1} - P2_{dim1}|, |P1_{dim2} - P2_{dim2},..., |P1_{dimN} - P2_{dimN}||)
+%	\end{align}
+%		
+%	Programmatically this could be implemented as follows:
+%	\begin{verbatim}
+%		dst = max(abs(F1-F2));
+%	\end{verbatim}
+%		

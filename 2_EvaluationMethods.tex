@@ -1,0 +1,89 @@
+\pagebreak
+\section{Evaluation Methododology for Visual Search}\label{eval}
+%	A Visual Search algorithm effectively can be measured subjectively with a human assessment about how similar the returned images are. While this is really clear in determining extreme cases it does not work for marginal improvements. As such an objective measure needs to be made in order to numerically justify improvement in an algorithm.\\
+%	
+%	This section describes some techniques for visualising, and numerically evaluating an algorithm that using evaluation methods typical to image classification. This is an acceptable parallel to use as the ground truth for this problem as we can treat this as a classification problem. We extract the ground truth for our dataset from the metadata (class numbers embedded in the image file names). This eliminates the ambiguity in situations such as in the images below where the image could be potentially classified for more than one class (in this case "bookshelf" or "face"):
+%	
+%	\begin{figure}[h]
+%		\centering
+%		\includegraphics[width=0.4\linewidth]{./img/6_1_s.png}
+%		\caption{Ambiguous Sample Query Image}
+%		\label{ambiguousQuery}
+%	\end{figure}	
+%
+%\subsection{Confusion Matrices}\label{confmat}
+%	A confusion Matrix is any table that can be used to describe the performance of a classifier by comparing classification to the ground truth\cite{dataschool}.
+%	\subsubsection{Boolean Confusion Matrices}\label{confmat_bool}
+%	The simplest type of Confusion Matrix looks into four factors where a classifier has predicted whether an image belongs to a specific class or not. For example:
+%		\begin{table}[h]
+%			\centering
+%			\begin{tabular}{|c|cc}
+%				\hline
+%				\textbf{N}                                                & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Predicted\\ True\end{tabular}}} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Predicted\\ False\end{tabular}}} \\ \hline
+%				\textbf{\begin{tabular}[c]{@{}c@{}}Actual\\ True\end{tabular}}  & \begin{tabular}[c]{@{}c@{}}True Positive\\ (TP)\end{tabular}                           & { \begin{tabular}[c]{@{}c@{}}False Negative\\ (FN)\end{tabular}}    \\ \cline{1-1}
+%				\textbf{\begin{tabular}[c]{@{}c@{}}Actual\\ False\end{tabular}} & \begin{tabular}[c]{@{}c@{}}False Positive\\ (FP)\end{tabular}                          & \begin{tabular}[c]{@{}c@{}}True Negative\\ (TN)\end{tabular}                            \\ \cline{1-1}
+%			\end{tabular}
+%			\caption{Boolean Confusion Matrix}
+%			\label{confmat_bool_example}
+%		\end{table}
+%
+%	While this is useful to categorize one image into one class what this alone is not appropriate for a visual search system.
+%
+%	\subsubsection{Class vs Class Confusion Matrices}\label{confmat_class}
+%		Visual Search programs are a close parallel to classifiers but the strict difference is that rather than classifying each image, takes the likelihood that each image is in the same category as the query, and returns the n-highest likelihood images for each query.\\
+%		
+%		For the scope of this report, this can be repeated for a single fixed query image in each class. In this case the first image in each class was selected. This is prone to variation in results depending on the image queried with. For each we can look at the number of images from each class that have been returned in the top n results. In this case there are 20 classes which would result in a $20 x 20$ matrix, which can be represented as a colour-map as below (assuming a perfect visual search in which all results returned were from the query class):
+%		\begin{figure}[h]
+%			\centering
+%			\includegraphics[width=0.6\linewidth]{./img/PerfectConfusionMatrix.png}
+%			\caption{Perfect Confusion Matrix}
+%			\label{confmat_perfect}
+%		\end{figure}
+%		
+%		This particular form of visualisation allows us to notice biases in the dataset easily and spot individual classes that perform particularly well or badly and can correlate this information with other metrics discussed below. N.B.: To balance this across classes that have a different number of instances in its ground truth, the values in each row are normalized (resulting in the 0-1 colour-map seen in Figure \ref{confmat_perfect}).
+%		
+%		\subsubsection{Implementation Details}
+%		This has been computed for the Top15 results and compared with all 20 classes for the purposes of this report. The functions and scripts named below are used in order to compute and display the appropriate confusion matrices, and code listings are available in Appendix \ref{App:AppendixB} (source code available in submitted package).
+%		\begin{verbatim}
+%		calculateConfusion_F1.m, plotConfMat.m
+%		\end{verbatim}
+%
+%\pagebreak
+%\subsection{PR Curve}\label{pr}
+%	Using a boolean confusion matrix(see Section \ref{confmat_bool}) for each query with n results returned we can calculate two pieces of information:\\
+%	
+%	1) \textbf{Precision:} if there are n results, what proportion of these belong to the correct class. Mathematically\cite{ng2018}:
+%	\begin{align}
+%		Precision = \dfrac{True Positives}{(True Positives + False Positives)}
+%	\end{align}
+%	
+%	2) \textbf{Recall:} if there are m possible correct results, for n results returned what proportion of these relevant results have been returned. Mathematically\cite{ng2018}:
+%	\begin{align}
+%		Recall = \dfrac{True Positives}{(True Positives + False Negatives)}
+%	\end{align}
+%	
+%	The \ac{PRC} itself is an iteratively calculated for the number of results from 1 result returned to the whole database of 591 images returned. This means that the first value should have a precision of exactly 1, and the last point on the curve must have a recall of exactly 1, plotting between them the trade-off between these two values. It's interesting to note though that for an individual queried image class, the curve is erratic (spiking at every positive result), but when averaged between all 20 classes a smoother \ac{PRC} can be visualized. However, this mean doesn't allow us to evaluate individual class improvement, or the disparity between performance for particular classes. As such for the purposes of this report the style of plotting will be to plot in dashed lines the individual class \ac{PRC}, but in a more prominent line the mean \ac{PRC} (in red). This can also then be compared to the Confusion Matrices defined in Section \ref*{confmat_class} in order to ascertain overall performance improvements as well as individual class performance. An example \ac{PRC} can be seen below in Figure \ref{prcExample}:
+%	
+%	\begin{figure}[h]
+%		\centering
+%		\includegraphics[width=0.6\linewidth]{./img/1compareQuant/globalRGBhist-euclidean-q6-pr-map-f1-EACH.png}
+%		\caption{Example \ac{PRC}}
+%		\label{prcExample}
+%	\end{figure}
+%
+%\pagebreak
+%\subsection{Single Value Metrics}\label{metric}
+%	Interestingly though these are both metrics that are designed to visually inform engineers about the effectiveness of an algorithm and the trade-off between these values can sometimes benefit from having a single numeric value that takes into account the various factors at play. The aim is to come up with a single numeric value that is directly proportional to the effectiveness of the algorithm (i.e. the higher the F1 score, the better the algorithm's performance). Below are two options that have been be used for this report and are relatively similar in nature (both have been plotted as prominent horizontal lines in Figure \ref{prcExample}).
+%	
+%	\subsubsection{F1 Score}\label{f1}
+%	Traditionally classifiers use what is called an F-Score (F1) which is a numeric combination of both precision (P) and recall (R). Mathematically\cite{ng2018}:
+%	\begin{align}
+%		F1 = 2\times\dfrac{P\times R}{(P + R)}
+%	\end{align}
+%	
+%	\subsubsection{Mean Average Precision}\label{map}
+%	An alternate method is suggested in course material\cite{Lectures2018}(Lecture 7) which takes the average precision per relevant result (giving us the \ac{AP}). When the mean of these values across all 20 classes is taken, this results in the \ac{MAP}, which gives a score that reacts less to a lack in recall response than the F1 score. Mathematically:
+%	\begin{align}
+%		F1 = 2\times\dfrac{P\times R}{(P + R)}
+%	\end{align}
+%	

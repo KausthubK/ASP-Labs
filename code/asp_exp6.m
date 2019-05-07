@@ -33,6 +33,9 @@ sampleSizes = [3 5 10 50 100];
 kND_best = [];
 E_train_best = [];
 E_test_best = [];
+
+E_train_mean_k = [];
+E_test_mean_k = [];
 for i = 1:length(sampleSizes)
     Nd = sampleSizes(i);
     E_train_mean = [];
@@ -62,9 +65,13 @@ for i = 1:length(sampleSizes)
         E_train_mean(kIter) = sum(e_train)/iters;
         E_test_mean(kIter) = sum(e_test)/iters;
     end
-    [val, idx] = max(E_test_mean);
+    E_train_mean_k{i} = E_train_mean;
+    E_test_mean_k{i} = E_test_mean;
+end
+for i = 1:length(E_test_mean_k)
+    [val, idx] = min(E_test_mean_k{i});
     kND_best(i) = kVals(idx);
-    E_train_best(i) = E_train_mean(idx);
+    E_train_best(i) = E_train_mean_k{i}(idx);
     E_test_best(i) = val;
 end
 
