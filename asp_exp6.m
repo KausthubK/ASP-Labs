@@ -22,7 +22,7 @@ mu2 = [a+d; b+d]
 cova = [c f;f c] % cova is the covariance matrix. didn't use cov since it's a built in function
 
 
-%% Comparing kNN with a gaussian classiefier
+%% Comparing kNN with a gaussian classifier
 X1_test = mvnrnd(mu1,cova,100);
 X2_test = mvnrnd(mu2,cova,100);
 
@@ -38,9 +38,9 @@ for i = 1:length(sampleSizes)
     E_train_mean = [];
     E_test_mean = [];
     if Nd*2 < 51
-        kVals = 3:2:(2*Nd);
+        kVals = 1:2:(2*Nd);
     else
-        kVals = 3:2:51;
+        kVals = 1:2:51;
     end
     for kIter = 1:length(kVals)
         k = kVals(kIter);
