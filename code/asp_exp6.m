@@ -83,11 +83,11 @@ legend('Test Set Error', 'Training Set Error')
 title(sprintf("ASP - Experiment 6"))
 xlabel('Nd')
 ylabel('Average Error')
-saveas(fig,'./Exp6-results/ErrorComparison.png')
+% saveas(fig,'./Exp6-results/ErrorComparison.png')
 
 fig = figure;
 plot(sampleSizes, kND_best)
 title(sprintf("ASP - Experiment 6"))
 xlabel('Nd')
 ylabel('k')
-saveas(fig,'./Exp6-results/BestkVals.png')
+% saveas(fig,'./Exp6-results/BestkVals.png')
